@@ -34,7 +34,7 @@ We must [fork](https://help.github.com/articles/fork-a-repo/) the sample Kuberne
 
 Login to GitHub and fork the sample service to your own account:
 
-<https://github.com/kmhabib/sydsummit-eks-cicd>
+<https://github.com/gamerf/sydsummit-eks-cicd>
 
 Once the repo is forked, you can view it in your your [GitHub repositories](https://github.com).
 
