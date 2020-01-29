@@ -271,75 +271,6 @@ eksctl create cluster --full-ecr-access --name=mythicalmysfits
 
 > **Cluster can take from 10-20 minutes. Go start Lab 1 where you're going to dockerize the image in a new Cloud9 Terminal shell and come back and verify successful creation of cluster once you're done there**. 
 
-
-> by default, 3 namespaces have been created
-```
-$ kubectl get namespaces
-NAME          STATUS    AGE
-default       Active    12m
-kube-public   Active    12m
-kube-system   Active    12m
-```
-verify 2 x Nodes have been created. These are your 2 EC2 instances that have been spun up by EKSCTL. You can verify this on the console
-```
-kubectl get nodes 
-
-$ kubectl get nodes 
-NAME                                           STATUS    ROLES     AGE       VERSION
-ip-192-168-6-81.us-west-2.compute.internal     Ready     <none>    6m        v1.11.9
-ip-192-168-72-167.us-west-2.compute.internal   Ready     <none>    6m        v1.11.9
-```
-
-Once the cluster has completely created, attach the proper roles to the EKS Nodes role so that they have access to DynamoDB (for Lab 2) and ability to spin up an ALB ingres service (Lab 3):
-
-```sh
-cd /home/ec2-user/environment/sydummit-eksworkshop-2019/workshop-1/script
-```
-Find the IAM role associated with the EC2 worker nodes, and assign it to a variable:
-
-```sh
-ROLE_NAME=<worker node role>
-```
-
-```
-My Node ROLE_NAME is: eksctl-mythicalmysfits-nodegroup-NodeInstanceRole-1WI0T4HNSIDXW
-```
-
-Attach the ingress *iam-ingress-dynamodb-policy.json* file as an inline policy to the Worker Node Role, this inline policy will be called *ingress-ddb*:
-
-```sh
-aws iam put-role-policy --role-name $ROLE_NAME --policy-name ingress-ddb --policy-document file://iam-ingress-dynamodb-policy.json
-```
-
-Validate that the policy is attached to the role:
-
-```sh
-aws iam get-role-policy --role-name $ROLE_NAME --policy-name ingress-ddb
-```
-
-**Optional**
-
-<details>
-<summary>Installing Kubernetes Dashboard</summary>
-
-If you want to install the Kubernetes DASHBOARD:
-
-```
-kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
-
-kubectl proxy &
-```
-
-Browse to: http://localhost:8080/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/
-
-and enter the token generated from this output. Note: Make sure you've provided the right clustername.
-```
-aws-iam-authenticator token -i mythicalmysfits --token-only
-```
-</details>
-
-
-
 ## Lab 1 - Containerize the Mythical Mysfits adoption agency platform
 
 The Mythical Mysfits adoption agency infrastructure has always been running directly on EC2 VMs. Our first step will be to modernize how our code is packaged by containerizing the current Mythical Mysfits adoption platform, which we'll also refer to as the monolith application.  To do this, you will create a [Dockerfile](https://docs.docker.com/engine/reference/builder/), which is essentially a recipe for [Docker](https://aws.amazon.com/docker) to build a container image.  You'll use your [AWS Cloud9](https://aws.amazon.com/cloud9/) development environment to author the Dockerfile, build the container image, and run it to confirm it's able to process adoptions.
@@ -680,6 +611,74 @@ Here's sample output from these commands:
 If you refresh the ECR repository page in the console, you'll see a new image uploaded and tagged as latest.
 
 ![ECR push complete](images/01-ecr-push-complete.png)
+
+## Lab 0 part 2 - Complete Launch of your EKS Cluster
+
+> by default, 3 namespaces have been created
+```
+$ kubectl get namespaces
+NAME          STATUS    AGE
+default       Active    12m
+kube-public   Active    12m
+kube-system   Active    12m
+```
+verify 2 x Nodes have been created. These are your 2 EC2 instances that have been spun up by EKSCTL. You can verify this on the console
+```
+kubectl get nodes 
+
+$ kubectl get nodes 
+NAME                                           STATUS    ROLES     AGE       VERSION
+ip-192-168-6-81.us-west-2.compute.internal     Ready     <none>    6m        v1.11.9
+ip-192-168-72-167.us-west-2.compute.internal   Ready     <none>    6m        v1.11.9
+```
+
+Once the cluster has completely created, attach the proper roles to the EKS Nodes role so that they have access to DynamoDB (for Lab 2) and ability to spin up an ALB ingres service (Lab 3):
+
+```sh
+cd /home/ec2-user/environment/sydummit-eksworkshop-2019/workshop-1/script
+```
+Find the IAM role associated with the EC2 worker nodes, and assign it to a variable:
+
+```sh
+ROLE_NAME=<worker node role>
+```
+
+```
+My Node ROLE_NAME is: eksctl-mythicalmysfits-nodegroup-NodeInstanceRole-1WI0T4HNSIDXW
+```
+
+Attach the ingress *iam-ingress-dynamodb-policy.json* file as an inline policy to the Worker Node Role, this inline policy will be called *ingress-ddb*:
+
+```sh
+aws iam put-role-policy --role-name $ROLE_NAME --policy-name ingress-ddb --policy-document file://iam-ingress-dynamodb-policy.json
+```
+
+Validate that the policy is attached to the role:
+
+```sh
+aws iam get-role-policy --role-name $ROLE_NAME --policy-name ingress-ddb
+```
+
+**Optional**
+
+<details>
+<summary>Installing Kubernetes Dashboard</summary>
+
+If you want to install the Kubernetes DASHBOARD:
+
+```
+kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
+
+kubectl proxy &
+```
+
+Browse to: http://localhost:8080/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/
+
+and enter the token generated from this output. Note: Make sure you've provided the right clustername.
+```
+aws-iam-authenticator token -i mythicalmysfits --token-only
+```
+</details>
 
 ### Checkpoint:
 At this point, you should have a working container for the monolith codebase stored in an ECR repository and ready to deploy with EKS in the next lab.
