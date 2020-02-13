@@ -17,8 +17,8 @@ These labs are designed to be completed in sequence, and the full set of instruc
 
 
 * **Workshop Setup:** [Setup working environment on AWS](#lets-begin)
-* **Lab 0:** [Launch your EKS Cluster](#lab-0---launch-your-eks-cluster)
-* **Lab 1:** [Containerize the Mythical Mysfits monolith](#lab-1---containerize-the-mythical-mysfits-adoption-agency-platform)
+* **Lab 0:** [Containerize the Mythical Mysfits monolith](#lab-0---containerize-the-mythical-mysfits-adoption-agency-platform)
+* **Lab 1:** [Launch your EKS Cluster](#lab-1---launch-your-eks-cluster)
 * **Lab 2:** [Deploy the container using EKS](Lab2.adoc)
 * **Lab 3:** [Incrementally build and deploy more microservices with EKS and ALB Ingress](Lab3.md)
 * **LAB 4:** [Configure CloudWatch Logs](Lab4/README.md)
@@ -221,57 +221,7 @@ At this point, the Mythical Mysfits website should be available at the static si
 
 [*^ back to top*](#lets-begin)
 
-
-## Lab 0 - Launch your EKS Cluster
-
----
-### Create an SSH key
----
-
-
-Please run this command to generate SSH Key in Cloud9. This key will be used on the worker node instances to allow ssh access if necessary.
-
-```bash
-ssh-keygen
-```
-
-
-> Press `enter` 3 times to take the default choices
-
-
-Upload the public key to your EC2 region:
-
-```bash
-aws ec2 import-key-pair --key-name "eksworkshop" --public-key-material file://~/.ssh/id_rsa.pub
-```
-
----
-### Now Launch an EKS Cluster
----
-You'll use EKSCTL to launch your EKS cluster. To learn more about EKSCTL, [click here](https://youtu.be/3-OZqA5p1HA). **Make sure you keep the name of the cluster `mythicalmysfits` since future labs will rely on this**
-```sh
-eksctl create cluster --full-ecr-access --name=mythicalmysfits
-```
-
-You can expect to see an output like the one below.
-```
-eksctl create cluster --full-ecr-access --name=mythicalmysfits
-2018-08-27T21:36:50Z [ℹ]  setting availability zones to [us-west-2c us-west-2b us-west-2a]
-2018-08-27T21:36:50Z [ℹ]  importing SSH public key "/home/ec2-user/.ssh/eks-key.pub" as "eksctl-mythicalmysfits-20:bc:c5:14:ab:c1:6b:92:10:e5:92:c0:2a:9e:07:37"
-2018-08-27T21:36:50Z [ℹ]  creating EKS cluster "mythicalmysfits" in "us-west-2" region
-2018-08-27T21:36:50Z [ℹ]  creating VPC stack "EKS-mythicalmysfits-VPC"
-2018-08-27T21:36:50Z [ℹ]  creating ServiceRole stack "EKS-mythicalmysfits-ServiceRole"
-2018-08-27T21:37:31Z [✔]  created ServiceRole stack "EKS-mythicalmysfits-ServiceRole"
-2018-08-27T21:37:51Z [✔]  created VPC stack "EKS-mythicalmysfits-VPC"
-2018-08-27T21:37:51Z [ℹ]  creating control plane "mythicalmysfits"
-....
-```
-
-> **Take note of your cluster name and record it.** 
-
-> **Cluster can take from 10-20 minutes. Go start Lab 1 where you're going to dockerize the image in a new Cloud9 Terminal shell and come back and verify successful creation of cluster once you're done there**. 
-
-## Lab 1 - Containerize the Mythical Mysfits adoption agency platform
+## Lab 0 - Containerize the Mythical Mysfits adoption agency platform
 
 The Mythical Mysfits adoption agency infrastructure has always been running directly on EC2 VMs. Our first step will be to modernize how our code is packaged by containerizing the current Mythical Mysfits adoption platform, which we'll also refer to as the monolith application.  To do this, you will create a [Dockerfile](https://docs.docker.com/engine/reference/builder/), which is essentially a recipe for [Docker](https://aws.amazon.com/docker) to build a container image.  You'll use your [AWS Cloud9](https://aws.amazon.com/cloud9/) development environment to author the Dockerfile, build the container image, and run it to confirm it's able to process adoptions.
 
@@ -612,7 +562,54 @@ If you refresh the ECR repository page in the console, you'll see a new image up
 
 ![ECR push complete](images/01-ecr-push-complete.png)
 
-## Lab 0 part 2 - Complete Launch of your EKS Cluster
+## Lab 1 - Launch your EKS Cluster
+
+---
+### Create an SSH key
+---
+
+
+Please run this command to generate SSH Key in Cloud9. This key will be used on the worker node instances to allow ssh access if necessary.
+
+```bash
+ssh-keygen
+```
+
+
+> Press `enter` 3 times to take the default choices
+
+
+Upload the public key to your EC2 region:
+
+```bash
+aws ec2 import-key-pair --key-name "eksworkshop" --public-key-material file://~/.ssh/id_rsa.pub
+```
+
+---
+### Now Launch an EKS Cluster
+---
+You'll use EKSCTL to launch your EKS cluster. To learn more about EKSCTL, [click here](https://youtu.be/3-OZqA5p1HA). **Make sure you keep the name of the cluster `mythicalmysfits` since future labs will rely on this**
+```sh
+eksctl create cluster --full-ecr-access --name=mythicalmysfits
+```
+
+You can expect to see an output like the one below.
+```
+eksctl create cluster --full-ecr-access --name=mythicalmysfits
+2018-08-27T21:36:50Z [ℹ]  setting availability zones to [us-west-2c us-west-2b us-west-2a]
+2018-08-27T21:36:50Z [ℹ]  importing SSH public key "/home/ec2-user/.ssh/eks-key.pub" as "eksctl-mythicalmysfits-20:bc:c5:14:ab:c1:6b:92:10:e5:92:c0:2a:9e:07:37"
+2018-08-27T21:36:50Z [ℹ]  creating EKS cluster "mythicalmysfits" in "us-west-2" region
+2018-08-27T21:36:50Z [ℹ]  creating VPC stack "EKS-mythicalmysfits-VPC"
+2018-08-27T21:36:50Z [ℹ]  creating ServiceRole stack "EKS-mythicalmysfits-ServiceRole"
+2018-08-27T21:37:31Z [✔]  created ServiceRole stack "EKS-mythicalmysfits-ServiceRole"
+2018-08-27T21:37:51Z [✔]  created VPC stack "EKS-mythicalmysfits-VPC"
+2018-08-27T21:37:51Z [ℹ]  creating control plane "mythicalmysfits"
+....
+```
+
+> **Take note of your cluster name and record it.** 
+
+> **Cluster can take from 10-20 minutes.
 
 > by default, 3 namespaces have been created
 ```
