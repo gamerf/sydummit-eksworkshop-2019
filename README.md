@@ -23,6 +23,6 @@ This is EKS part of a single workshop.
 
 **[EKS workshop](workshop-1/)**
 
-You have a choice of doing either the ECS/Fargate workshop or the EKS workshop. To go with the ECS option: [ECS and Fargate Workshop](https://github.com/vanchee/containers-sydsummit-workshop-2019)
+You have a choice of doing either the ECS/Fargate workshop or the EKS workshop. To go with the ECS option: [ECS and Fargate Workshop](https://github.com/gamerf/containers-sydsummit-workshop-2019)
 
 
